@@ -23,8 +23,6 @@ server.register([{
 }, {
   register: require(Path.join(__dirname, 'plugins/socket-provider'))
 }, {
-  register: require(Path.join(__dirname, 'plugins/midi-provider'))
-}, {
   register: require(Path.join(__dirname, 'plugins/patch-finder'))
 }], function(error) {
   if (error) {

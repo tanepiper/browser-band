@@ -68,13 +68,6 @@ var WebMidi = function () {
   WebMidi.init = function () {
     if (navigator.requestMIDIAccess) {
       navigator.requestMIDIAccess({ sysex: false }).then(WebMidi.onMIDISuccess, WebMidi.onMIDIFailure);
-
-      //WebMidi.soundPatches = document.getElementsByClassName('sound-patch');
-      //
-      //for (var i = 0; i < WebMidi.soundPatches.length; i++) {
-      //  WebMidi.addAudioProperties(WebMidi.soundPatches[i], i);
-      //}
-
     } else {
       alert("No MIDI support in your browser.");
     }
@@ -118,13 +111,23 @@ var WebMidi = function () {
       input.value.onmidimessage = WebMidi.onMIDIMessage;
       // this just lists our inputs in the console
       //listInputs(input);
+
+      var alert = document.getElementById('midi-status');
+      alert.classList.remove('alert-warning');
+      alert.classList.add('alert-success');
+      alert.innerHTML = "Input port : [ type:'" + input.value.type + "' id: '" + input.value.id +
+        "' manufacturer: '" + input.value.manufacturer + "' name: '" + input.value.name +
+        "' version: '" + input.value.version + "']";
     }
     // listen for connect/disconnect message
     WebMidi.midi.onstatechange = WebMidi.onStateChange;
   };
 
   WebMidi.onMIDIFailure = function(e) {
-    console.log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
+    var alert = document.getElementById('midi-status');
+    alert.classList.remove('alert-warning');
+    alert.classList.add('alert-danger');
+    alert.innerHTML = ("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
   };
 
   WebMidi.onStateChange = function (event) {
@@ -135,6 +138,21 @@ var WebMidi = function () {
 
     if (type == 'input') {
       console.log('name', name, 'port', port, 'state', state);
+    }
+
+    if (state === 'connected') {
+      var alert = document.getElementById('midi-status');
+      alert.classList.remove('alert-warning');
+      alert.classList.add('alert-success');
+      alert.innerHTML = "Input port : [ type:'" + event.port.type + "' id: '" + event.port.id +
+        "' manufacturer: '" + event.port.manufacturer + "' name: '" + event.port.name +
+        "' version: '" + event.port.version + "']";
+    } else if (state === 'disconnected') {
+      var alert = document.getElementById('midi-status');
+      alert.classList.remove('alert-warning');
+      alert.classList.remove('alert-success');
+      alert.classList.add('alert-warning');
+      alert.innerHTML = 'Waiting for Midi device...';
     }
   };
 
