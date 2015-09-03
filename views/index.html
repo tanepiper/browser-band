@@ -1,0 +1,24 @@
+{{!< layout/default}}
+
+<div id="player" class="starter-template"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="vendor/lodash.js"></script>
+<script src="js/webmidi/index.js"></script>
+
+<script>
+
+  var socket = io();
+  var midiInterface = new WebMidi();
+  midiInterface.init();
+
+  socket.emit('get-patch-list');
+
+  socket.on('patch-list', function (patchList) {
+    midiInterface.addToLibrary(patchList);
+    midiInterface.createPlayArea();
+  });
+
+
+
+</script>

@@ -17,6 +17,8 @@ server.connection({ port: 9000 });
 server.register([{
   register: require('inert')
 }, {
+  register: require('vision')
+}, {
   register: require(Path.join(__dirname, 'plugins/static-provider'))
 }, {
   register: require(Path.join(__dirname, 'plugins/socket-provider'))
@@ -28,11 +30,41 @@ server.register([{
   if (error) {
     throw error;
   }
-});
 
-server.start(function (error) {
-  if (error) {
-    throw error;
-  }
-  console.log('server listening');
+  server.views({
+    engines: {
+      html: require('handlebars')
+    },
+    relativeTo: __dirname,
+    path: 'views',
+    layoutPath: 'views/layout',
+    helpersPath: 'views/helpers',
+    layout: 'default'
+  });
+
+  var routes = [{
+    method: 'GET',
+    path: '/',
+    handler: function(request, reply) {
+
+      console.log(server.app.patchFiles);
+
+      var data = {
+        title: 'Browser Band',
+        patchFiles: server.app.patchFiles
+      };
+
+      return reply.view('index', data);
+    }
+  }];
+
+  server.route(routes);
+
+  server.start(function (error) {
+    if (error) {
+      throw error;
+    }
+    console.log('server listening');
+  });
+
 });

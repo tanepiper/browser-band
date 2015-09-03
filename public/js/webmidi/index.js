@@ -17,22 +17,25 @@ var WebMidi = function () {
 
     newElem.appendChild(newOption);
 
-    newElem.onclick = function(event) {
+    //newElem.onclick = function(event) {
       webMidi.patchLibrary.forEach(function (file) {
         var newOption = document.createElement('option');
         newOption.innerHTML = file.name;
         newOption.value = (file.library + '/' + file.patch + '/' + file.file);
 
-        event.target.appendChild(newOption);
+        newElem.appendChild(newOption);
       });
-    };
+    //};
 
     newElem.onchange = function(event) {
       WebMidi.addAudioProperties(this);
     };
 
-    webMidi.playArea.appendChild(newElem);
+    return newElem;
   }
+
+  var MIDI_PAD_MIN = 32;
+  var MINI_PAD_MAX = 39;
 
   var MIDI_KEY_MIN = 48;
   var MIDI_KEY_MAX = 72;
@@ -80,9 +83,29 @@ var WebMidi = function () {
   WebMidi.createPlayArea = function () {
     WebMidi.playArea = document.getElementById('player');
 
+    var container1 = document.createElement('div');
+    container1.setAttribute('class', 'jumbotron');
+
+    var header1 = document.createElement('h1');
+    header1.innerHTML = 'Midi Keyboard';
+    container1.appendChild(header1);
+
     for (var i = MIDI_KEY_MIN; i <= MIDI_KEY_MAX; i++) {
-      createSelect(i, WebMidi);
+      container1.appendChild(createSelect(i, WebMidi));
     }
+    WebMidi.playArea.appendChild(container1);
+
+    var container2 = document.createElement('div');
+    container2.setAttribute('class', 'jumbotron');
+
+    var header2 = document.createElement('h1');
+    header2.innerHTML = 'Midi Drumpad';
+    container2.appendChild(header2);
+
+    for (var j = MIDI_PAD_MIN; j <= MINI_PAD_MAX; j++) {
+      container2.appendChild(createSelect(j, WebMidi));
+    }
+    WebMidi.playArea.appendChild(container2);
   };
 
   WebMidi.onMIDISuccess = function (midiAccess) {
@@ -162,7 +185,7 @@ var WebMidi = function () {
         break;
     }
 
-    //console.log('data', data, 'cmd', cmd, 'channel', channel);
+    console.log('data', data, 'cmd', cmd, 'channel', channel);
     //console.log(keyData, 'key data', data);
   };
 
@@ -171,7 +194,9 @@ var WebMidi = function () {
   };
 
   WebMidi.noteOff = function (midiNote, velocity, type) {
-    WebMidi.player(midiNote, velocity, type);
+    //var element = WebMidi.sampleMap['key' + midiNote];
+    //element.sample.stop();
+    //WebMidi.player(midiNote, velocity, type);
   };
 
   WebMidi.player = function(note, velocity, type) {
@@ -262,6 +287,7 @@ var WebMidi = function () {
       //}
 
       sample.buffer = element.buffer;
+      //sample.loop = true;
       var playbackValue =  0.02 * note + WebMidi.bend;
       sample.playbackRate.value = playbackValue; //randomRange(0.5, 2);
 
