@@ -92,7 +92,6 @@ var WebMidi = function () {
     random.onclick = function() {
       var selects = document.getElementsByTagName('select');
       for (var s = 0, len = selects.length; s < len; s++) {
-        console.log(selects[s].options, selects[s].length);
         selects[s].options[Math.round(Math.random() * selects[s].length)].setAttribute('selected', 'selected');
         selects[s].onchange();
       }
@@ -266,8 +265,8 @@ var WebMidi = function () {
 
   WebMidi.changeGain = function() {
     _.each(WebMidi.sampleMap, function (element) {
-      var v = rangeMap(element.sample.velocity + WebMidi.pressure, 1, 127, 0.2, 2);
-      if ( element.sample &&  element.sample.volumeGain) {
+      if (element.sample &&  element.sample.volumeGain) {
+        var v = rangeMap(element.sample.velocity + WebMidi.pressure, 1, 127, 0.2, 2);
         element.sample.volumeGain.gain.value = v * v;
       }
     });
