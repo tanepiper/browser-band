@@ -11,6 +11,7 @@ var WebMidi = function () {
   function createSelect (index, webMidi) {
     var newElem = document.createElement('select');
     newElem.dataset.midiKey = index;
+    newElem.style.backgroundColor = 'transparent';
 
     var newOption = document.createElement('option');
     newOption.innerHTML = 'Click to load and select sound';
@@ -37,7 +38,7 @@ var WebMidi = function () {
   var MIDI_PAD_MIN = 32;
   var MINI_PAD_MAX = 39;
 
-  var MIDI_KEY_MIN = 48;
+  var MIDI_KEY_MIN = 44;
   var MIDI_KEY_MAX = 72;
 
   var WebMidi = {};
@@ -90,16 +91,22 @@ var WebMidi = function () {
     var random = document.createElement('button');
     random.innerHTML = 'Load Random Instruments';
     random.onclick = function() {
+      var alreadySelected = [];
+
       var selects = document.getElementsByTagName('select');
       for (var s = 0, len = selects.length; s < len; s++) {
-        selects[s].options[Math.round(Math.random() * selects[s].length)].setAttribute('selected', 'selected');
+        var num = Math.floor(Math.random() * selects[s].length);
+        while(alreadySelected.indexOf(num) !== -1) {
+          num = Math.floor(Math.random() * selects[s].length);
+        }
+        alreadySelected.push(num);
+
+        selects[s].options[num].setAttribute('selected', 'selected');
         selects[s].onchange();
       }
     };
 
     container1.appendChild(random);
-
-
     WebMidi.playArea.appendChild(container1);
 
     var container2 = document.createElement('div');
@@ -226,20 +233,25 @@ var WebMidi = function () {
   };
 
   WebMidi.noteOff = function (midiNote, velocity, type) {
-    //var element = WebMidi.sampleMap['key' + midiNote];
+    var element = WebMidi.sampleMap['key' + midiNote];
+    if (element) {
+      element.style.backgroundColor = 'transparent';
+    }
+
     //element.sample.stop();
     //WebMidi.player(midiNote, velocity, type);
   };
 
   WebMidi.player = function(note, velocity, type) {
-    var sample = WebMidi.sampleMap['key' + note];
-    if (sample) {
+    var element = WebMidi.sampleMap['key' + note];
+    if (element) {
+      element.style.backgroundColor = 'red';
       if (type == (0x80 & 0xf0) || velocity == 0) { //QuNexus always returns 144
         //WebMidi.soundPatches.btn[sample - 1].classList.remove('active');
         return;
       }
       //WebMidi.soundPatches.btn[sample - 1].classList.add('active');
-      sample.play(note, velocity);
+      element.play(note, velocity);
     }
   };
 
