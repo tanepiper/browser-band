@@ -86,6 +86,21 @@ var WebMidi = function () {
     for (var i = MIDI_KEY_MIN; i <= MIDI_KEY_MAX; i++) {
       container1.appendChild(createSelect(i, WebMidi));
     }
+
+    var random = document.createElement('button');
+    random.innerHTML = 'Load Random Instruments';
+    random.onclick = function() {
+      var selects = document.getElementsByTagName('select');
+      for (var s = 0, len = selects.length; s < len; s++) {
+        console.log(selects[s].options, selects[s].length);
+        selects[s].options[Math.round(Math.random() * selects[s].length)].setAttribute('selected', 'selected');
+        selects[s].onchange();
+      }
+    };
+
+    container1.appendChild(random);
+
+
     WebMidi.playArea.appendChild(container1);
 
     var container2 = document.createElement('div');
@@ -203,7 +218,7 @@ var WebMidi = function () {
         break;
     }
 
-    console.log('data', data, 'cmd', cmd, 'channel', channel);
+    //console.log('data', data, 'cmd', cmd, 'channel', channel);
     //console.log(keyData, 'key data', data);
   };
 
