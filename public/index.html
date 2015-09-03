@@ -1,0 +1,52 @@
+<html>
+<head>
+  <title>Web Midi</title>
+</head>
+
+<body>
+  <div id="player">
+
+  </div>
+
+<!--<div id="content">-->
+  <!--<div class="sound-patch" data-midi-value="44" data-sound="patches/dinkys-taiko/dinky-kick.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="45" data-sound="patches/dinkys-taiko/dinky-snare-1.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="46" data-sound="patches/dinkys-taiko/dinky-snare-2.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="47" data-sound="patches/dinkys-taiko/dinky-snare-hat-1.mp3"></div>-->
+
+  <!--<div class="sound-patch" data-midi-value="48" data-sound="patches/dinkys-taiko/dinky-bass-1.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="49" data-sound="patches/dinkys-taiko/dinky-bass-2.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="50" data-sound="patches/dinkys-taiko/dinky-cym.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="51" data-sound="patches/dinkys-taiko/dinky-hat.mp3"></div>-->
+
+  <!--<div class="sound-patch" data-midi-value="60" data-sound="patches/dinkys-taiko/dinky-kick.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="61" data-sound="patches/dinkys-taiko/dinky-snare.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="62" data-sound="patches/dinkys-taiko/dinky-hat-2.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="63" data-sound="patches/dinkys-taiko/dinky-cym.mp3"></div>-->
+  <!--<div class="sound-patch" data-midi-value="64" data-sound="patches/dinkys-taiko/dinky-cym-noise.mp3"></div>-->
+<!--</div>-->
+<!--<div id="device_info">-->
+  <!--<div id="key_data"></div>-->
+<!--</div>-->
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="vendor/lodash.js"></script>
+<script src="js/webmidi/index.js"></script>
+
+<script>
+
+  var socket = io();
+  var midiInterface = new WebMidi();
+
+  socket.emit('get-patch-list');
+
+  socket.on('patch-list', function (fileList) {
+    midiInterface.addToLibrary(fileList);
+  });
+
+
+  midiInterface.init();
+  midiInterface.createPlayArea();
+</script>
+</body>
+</html>
